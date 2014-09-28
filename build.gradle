@@ -36,10 +36,6 @@ dependencies {
     testCompile 'io.vertx:vertx-core:3.0.0-SNAPSHOT:tests'
 }
 
-test {
-    testLogging.showStandardStreams = true
-}
-
 shadowJar {
     classifier = 'fat'
     manifest {
