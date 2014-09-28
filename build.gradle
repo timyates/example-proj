@@ -24,12 +24,6 @@ repositories {
     }
 }
 
-sourceSets {
-    main {
-        resources.srcDirs = ['src/main/resources', 'src/main/webapp']
-    }
-}
-
 dependencies {
     compile 'io.vertx:vertx-core:3.0.0-SNAPSHOT'
     compile 'io.vertx:vertx-js:3.0.0-SNAPSHOT'
