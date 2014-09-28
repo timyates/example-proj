@@ -18,7 +18,7 @@ public class RESTAPITest extends VertxTestBase {
 
   @Test
   public void testPlaceOrder() {
-
+    disableThreadChecks();
     vertx.deployVerticle("js:javascript/app.js", onSuccess(deploymentID -> {
 
       System.out.println("Creating client");

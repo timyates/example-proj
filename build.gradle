@@ -1,0 +1,69 @@
+buildscript {
+    repositories { jcenter() }
+    dependencies {
+        classpath 'com.github.jengelman.gradle.plugins:shadow:1.1.1'
+    }
+}
+
+apply plugin: 'groovy'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+version = '1.0-SNAPSHOT'
+
+if (!JavaVersion.current().java8Compatible) {
+    throw new IllegalStateException('''A Haiku:
+                                      |  Java 8 required,
+                                      |  You need a newer version,
+                                      |  Ahhh, the modern world.'''.stripMargin())
+}
+
+repositories {
+    mavenCentral()
+    maven {
+        url = 'http://oss.sonatype.org/content/repositories/snapshots/'
+    }
+}
+
+sourceSets {
+    main {
+        resources.srcDirs = ['src/main/resources', 'src/main/webapp']
+    }
+}
+
+dependencies {
+    compile 'io.vertx:vertx-core:3.0.0-SNAPSHOT'
+    compile 'io.vertx:vertx-js:3.0.0-SNAPSHOT'
+    compile 'io.vertx:vertx-groovy:3.0.0-SNAPSHOT'
+    compile 'org.codehaus.groovy:groovy-all:2.3.3'
+    compile 'io.vertx:ext-mongo:3.0.0-SNAPSHOT'
+    compile 'io.vertx:ext-routematcher:3.0.0-SNAPSHOT'
+    compile 'io.vertx:ext-sockjs:3.0.0-SNAPSHOT'
+    testCompile 'junit:junit:4.11'
+    testCompile 'io.vertx:vertx-core:3.0.0-SNAPSHOT:tests'
+}
+
+test {
+    testLogging.showStandardStreams = true
+}
+
+shadowJar {
+    classifier = 'fat'
+    manifest {
+        attributes 'Main-Class': 'io.vertx.core.Starter'
+        attributes 'Main-Verticle': 'js:javascript/app.js'
+    }
+    mergeServiceFiles {
+        include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
+    }
+    dependencies {
+        exclude(dependency('io.vertx:codegen'))
+        exclude(dependency('junit:junit'))
+        exclude(dependency('org.mvel:mvel2'))
+        exclude(dependency('log4j:log4j'))
+        exclude(dependency('org.slf4j:slf4j-api'))
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.0'
+}
